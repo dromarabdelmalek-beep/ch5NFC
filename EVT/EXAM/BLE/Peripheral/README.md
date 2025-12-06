@@ -15,7 +15,9 @@ Advanced cold chain monitoring system for food safety using CH583 BLE SoC with e
 ## Hardware
 
 - **MCU**: CH583 (RISC-V, 32KB RAM, 448KB Flash, BLE 5.3)
-- **Display**: 2.9" E-Paper (SSD1680/IL3897 controller)
+- **Display**: 2.9" E-Paper 296×128
+  - **GDEY029T94** (Good Display, UC8151D controller) ← **RECOMMENDED**
+  - Generic SSD1680/IL3897 (alternative)
 - **Sensor**: SHT4x I2C Temperature/Humidity
 - **Interface**: 3 GPIO buttons for user input
 - **Storage**: Flash for persistent state
@@ -23,10 +25,13 @@ Advanced cold chain monitoring system for food safety using CH583 BLE SoC with e
 ## Pin Configuration
 
 ### E-Paper Display (SPI)
-- CS: PA12
-- DC: PA8
-- RST: PA9
-- BUSY: PA10
+- **GDEY029T94** (recommended):
+  - CS: PA4
+  - DC: PA1
+  - RST: PA2
+  - BUSY: PA3
+  - SCK: PA12 (SPI0_SCK)
+  - MOSI: PA13 (SPI0_MOSI)
 
 ### SHT4x Sensor (I2C)
 - SCL: PB13
@@ -215,3 +220,34 @@ This project includes code from:
 
 - **V1.1** (2025-12-06): Migrated to CH583, 32KB RAM support
 - **V1.0** (2025-12-05): Initial CH572 implementation (insufficient RAM)
+
+## E-Paper Display Setup
+
+### GDEY029T94 (Recommended)
+
+This project is optimized for the **GDEY029T94** (Good Display 2.9" e-paper).
+
+**Quick Setup:**
+1. Set `EPAPER_GDEY029T94 = 1` in `APP/include/CONFIG.h` (default)
+2. Connect display according to pin configuration above
+3. Build and flash firmware
+
+**Detailed Setup Guide**: See [GDEY029T94_SETUP.md](GDEY029T94_SETUP.md)
+
+**Display Specifications:**
+- Model: GDEY029T94
+- Size: 2.9 inches
+- Resolution: 296 × 128 pixels
+- Controller: UC8151D (IL0373)
+- Interface: 4-wire SPI
+- Refresh: ~2s (full), ~1s (partial)
+- Power: <1µA (sleep), ~26mW (active)
+
+### Alternative Displays
+
+If using a different 2.9" e-paper display:
+1. Set `EPAPER_GDEY029T94 = 0` in `CONFIG.h`
+2. Use `epaper_driver_full.c` (SSD1680 driver)
+3. Update pin configuration if needed
+4. Modify initialization sequence for your controller
+
